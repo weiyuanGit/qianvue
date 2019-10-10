@@ -1,286 +1,321 @@
 <template>
-	<div>
-		<el-row style="padding: 20px">
-			<el-col :span="2" style="min-height: 20px"></el-col>
-			<el-col :span="20">
-				<span class="title-box"> 标题：</span>
-				<el-input placeholder="请输入标题" v-model="title" style="display: inline-block;width: 400px"></el-input>
-			</el-col>
-		</el-row>
-		<el-row style="margin-bottom: 10px">
-			<el-col :span="2" style="min-height: 20px"></el-col>
-			<el-col :span="20">
-				<div id="editor"></div>
-			</el-col>
-		</el-row>
-		<el-row> 
-			<el-col :span="8">
-				<el-form label-width="80px">
-					<el-form-item label="状态">
-						<el-select v-model="status" placeholder="请选择" style="margin-right: 10px;">
-							<el-option v-for="item in statusList" :key="item.value" :label="item.name" :value="item.value">
-							</el-option>
-						</el-select>
-					</el-form-item>
-				</el-form>
-			</el-col>
-			<el-col :span="8">
-				<el-form label-width="80px">
-					<el-form-item label="付费">
-						<el-select v-model="power" placeholder="请选择" style="margin-right: 10px;">
-							<el-option v-for="item in powerList" :key="item.value" :label="item.name" :value="item.value">
-							</el-option>
-						</el-select>
-					</el-form-item>
-				</el-form>
-			</el-col>
-			<el-col :span="8">
-				<el-form label-width="80px">
-					<el-form-item label="显示">
-						<el-select v-model="show" placeholder="请选择" style="margin-right: 10px;">
-							<el-option v-for="item in showList" :key="item.value" :label="item.name" :value="item.value">
-							</el-option>
-						</el-select>
-					</el-form-item>
-				</el-form>
-			</el-col>
-			<el-col :span="8">
-				<el-form label-width="80px">
-					<el-form-item label="类型">
-						<el-select v-model="contentType" placeholder="请选择" style="margin-right: 10px;">
-							<el-option v-for="item in typeList" :key="item.value" :label="item.name" :value="item.value">
-							</el-option>
-						</el-select>
-					</el-form-item>
-				</el-form>
-			</el-col>
-			<el-col :span="8">
-				<el-form label-width="80px">
-					<el-form-item label="首页标签">
-						<el-select v-model="homeTagName" placeholder="请选择" style="margin-right: 10px;">
-							<el-option v-for="item in homeTag" :key="item.name" :label="item.title" :value="item.name">
-							</el-option>
-						</el-select>
-					</el-form-item>
-				</el-form>
-			</el-col>
-			<el-col :span="8">
-				<el-form label-width="80px">
-					<el-form-item label="专栏">
-						<el-select v-model="upChannelId" placeholder="请选择" style="margin-right: 10px;" @change="getChannelContentTag">
-							<el-option v-for="item in channelList" :key="item.id" :label="item.title" :value="item.id" >
-							</el-option>
-						</el-select>
-					</el-form-item>
-				</el-form>
-			</el-col>
-			<el-col :span="8">
-				<el-form label-width="80px">
-					<el-form-item label="所属课程">
-						<el-select v-model="channelTagName" placeholder="请选择" style="margin-right: 10px;">
-							<el-option v-for="item in channelContentTag" :key="item.id" :label="item.title" :value="item.name">
-							</el-option>
-						</el-select>
-					</el-form-item>
-				</el-form>
-			</el-col>
-		</el-row>
+    <div>
+        <el-row class="row-box">
+            <el-col :span="24">
+                修改内容
+            </el-col>
+        </el-row>
 
-		<el-row style="margin-top: 20px">
-			<el-button type="primary" @click="subBtn" style="margin: 0 auto;display: block;padding: 15px 50px">提交
-			</el-button>
-		</el-row>
+        <el-row class="row-box1">
 
-	</div>
+            <el-col :span="24" style="margin-bottom: 10px">
+                <el-col :span="4">
+                    <div class="title-box">标题:</div>
+                </el-col>
+                <el-col :span="14">
+                    <div class="text-box">
+                        <el-input v-model="title" placeholder="标题"></el-input>
+                    </div>
+                </el-col>
+            </el-col>
+
+            <el-col :span="24">
+                <el-col :span="4">
+                    <div class="title-box">标签:</div>
+                </el-col>
+                <el-col :span="18" class="text-box">
+                    <el-tag
+                            :key="tag"
+                            v-for="tag in tagList"
+                            closable
+                            :disable-transitions="false"
+                            @close="handleClose(tag)">
+                        {{tag}}
+                    </el-tag>
+                    <el-input
+                            class="input-new-tag"
+                            v-if="inputVisible"
+                            v-model="inputValue"
+                            ref="saveTagInput"
+                            size="small"
+                            @keyup.enter.native="handleInputConfirm"
+                            @blur="handleInputConfirm"
+                    >
+                    </el-input>
+                    <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+                </el-col>
+            </el-col>
+
+
+            <el-col :span="24" style="margin-bottom: 10px">
+                <el-col :span="4">
+                    <div class="title-box">展示样式:</div>
+                </el-col>
+                <el-col :span="18">
+                    <div class="text-box">
+                        <el-select v-model="show" placeholder="请选择" style="margin-right: 10px;">
+                            <el-option
+                                    v-for="item in showList"
+                                    :key="item.value"
+                                    :label="item.name"
+                                    :value="item.value"
+                            >
+                            </el-option>
+                        </el-select>
+                    </div>
+                </el-col>
+            </el-col>
+
+            <el-col :span="24" style="margin-bottom: 10px">
+                <el-col :span="4">
+                    <div class="title-box">内容:</div>
+                </el-col>
+                <el-col :span="14">
+                    <div class="text-box" style="margin-top: 30px" v-for="(item,index) in contentList" :key="index">
+                        <img :src="item.value" v-if="item.type == 'img'">
+                        <div v-html="item.value" v-if="item.type == 'textarea'"
+                             style="background-color: #e7e1cd;font-size: 18px"></div>
+                        <el-input type="textarea" v-model="contentList[index].value" placeholder="输入变更后内容"></el-input>
+                    </div>
+                </el-col>
+            </el-col>
+            <el-col :span="24" style="text-align: center">
+            <el-button style="padding: 1em 4em" type="primary" @click="changeBtn(4)">审核通过</el-button>
+            <el-button style="padding: 1em 4em" type="info" @click="changeBtn(5)">审核不通过</el-button>
+            </el-col>
+        </el-row>
+
+        <div style="height: 0;overflow: hidden" v-html="contentList[0].value" id="html">
+        </div>
+    </div>
 </template>
 
 <script>
-	import wangEditor from 'wangeditor'
+    export default {
+        name: "editContent",
+        data() {
+            return {
+                contentInfo: '',
+                title: '',
+                //标签
+                tagList: [],
+                inputVisible: false,
+                inputValue: '',
+                //状态列表
+                statusList: [
+                    {
+                        name: '审核成功',
+                        value: 4,
+                    },
+                    {
+                        name: '不通过',
+                        value: 5,
+                    }
+                ],
+                status: '',
+                //展示样式
+                showList: [
+                    {
+                        name: '底部图',
+                        value: 0,
+                    },
+                    {
+                        name: '右侧图',
+                        value: 1,
+                    },
+                    {
+                        name: '三图',
+                        value: 2,
+                    }
+                ],
+                show: '',
 
-	export default {
-		name: "addContent",
-		data() {
-			return {
-				contentInfo:'',
-				channelTagName:'',
-				homeTagName:'',
-				channelContentTag:'',
-				channelTag:'',
-				homeTag:'',
-				editor: {},
-				imgList: [],
+                contentList: [],
+                imgList:[],
 
-				tag: '',
-				paidIndex: false,
-				videoSrc: [],
 
-				// paid: 0,
-				upChannelId: '',
-				channelList: [{
-					title: '',
-					id: 0,
-				}],
-				show: 0,
-				title: '',
-				power: '',
-				status: '',
-				contentType: '',
-				userId: 401770184378345,
+                html:'',
+            }
+        },
+        methods: {
+            changeBtn(status) {
+                let contentInfo = this.contentInfo
+                for(let i = 0;i<this.contentList.length;i++){
+                    if(this.contentList[i].type == 'img'){
+                        let img = {
+                            src:this.contentList[i].value
+                        }
+                        this.imgList.push(img)
+                    }
+                }
+                let html = document.getElementById('html')
+                let imgArr = html.getElementsByTagName('img')
+                if(imgArr.length>0){
+                    for(let i=0;i<imgArr.length;i++){
+                        let img = {
+                            src:imgArr[i].currentSrc
+                        }
+                        this.imgList.push(img)
+                    }
+                }
+                let data = {
+                    editor:this.contentList,
+                    show:this.show,
+                    imgList:this.imgList
+                }
+                let cnt = {
+                    // userId: contentInfo.upUserId, // Long 用户编号
+                    // _id: contentInfo._id, // String 内容分片编号
+                    // id: contentInfo.id, // Long 内容编号
+                    // status: status, // Byte 状态Content.STATUS
+                    // // upChannelId: upChannelId, // Long <选填> 上传专栏编号
+                    // title: this.title, // String 标题
+                    // tags: JSON.stringify(this.tagList), // String <选填> 标签
+                    // data: JSON.stringify(data), // String 数据（JSON）
+					
+					
+					id: contentInfo.id, // Long 内容编号
+					module: 1170, // String <选填> 模块编号
+					type: type, // Byte <选填> 内容类型
+					status: status, // Byte <选填> 状态
+					power: power, // Byte <选填> 权力:付费，会员等
+					upUserId: upUserId, // Long <选填> 上传用户编号
+					upChannelId: upChannelId, // Long <选填> 上传专栏编号
+					tags: tags, // JSONObject <选填> 标签
+					title: title, // String <选填> 标题
+					data: data, // String <选填> 数据
+					proviteData: proviteData, // String <选填> 私密信息
+					ext: ext, // String <选填> 扩展信息
+                }
+                this.$api.editContent(cnt,(res=>{
+                    if(res.data.rc == this.$util.RC.SUCCESS){
+                        this.$router.push('examineList')
+                        this.$message({
+                            message: '审核完毕',
+                            type: 'success'
+                        });
+                    }else {
+                        this.$message({
+                            message: res.data.c,
+                            type: 'warning'
+                        });
+                    }
+                }))
+            },
 
-				typeList: this.$constData.typeList,
-				statusList: this.$constData.statusList,
-				powerList: this.$constData.powerList,
-				showList: this.$constData.showList,
+            // 标签
+            handleClose(tag) {
+                this.tagList.splice(this.tagList.indexOf(tag), 1);
+                console.log(this.tagList)
+            },
 
-			}
+            showInput() {
+                this.inputVisible = true;
+                this.$nextTick(_ => {
+                    this.$refs.saveTagInput.$refs.input.focus();
+                });
+            },
 
-		},
-		methods: {
+            handleInputConfirm() {
+                let that = this
+                let inputValue = this.inputValue;
+                if (inputValue) {
+                    that.tagList.push(inputValue);
+                }
+                this.inputVisible = false;
+                this.inputValue = '';
+                console.log(this.tagList)
+            }
 
-			subBtn() {
-				let that = this
-				let a = this.editor.txt.getJSON()
-				for (let i = 0; i < a.length; i++) {
-					let b = a[i].children
-					for (let n = 0; n < b.length; n++) {
-						if (b[n] instanceof Object && b[n].tag == 'img') {
-							let imgSrc = {
-								src: b[n].attrs[0].value
-							}
-							that.imgList.push(imgSrc)
-						}
-					}
-				}
-				this.editorBtn()
-			},
-			editorBtn() {
-				let that = this
-				let text = this.editor.txt.html()
-				let data = {
-					editor: [{
-						type: 'textarea',
-						value: text
-					}],
-					show: this.show,
-					imgList: this.imgList
-				}
-				let cid = `{"homeCotent":["${this.homeTagName}"]}`
-				if(this.upChannelId != '' && this.channelTagName != ''){
-					cid = `{"t${this.upChannelId}":["${this.channelTagName}"],"homeCotent":["${this.homeTagName}"]}`
-				}
-				let cnt = {
-					module: this.$constData.module,
-					type: this.contentType,
-					status: this.status,
-					power: this.power,
-					upUserId: this.userId,
-					upChannelId: this.upChannelId, //上传专栏编号
-					tags: JSON.parse(cid),
-					title: this.title,
-					data: JSON.stringify(data),
-					//proviteData: proviteData, // String <选填> 私密信息
-					//ext: ext, // String <选填> 扩展信息
-				}
-				if (that.upChannelId != '') {
-					cnt.upChannelId = parseInt(that.upChannelId)
-				}
-				that.$api.addContent(cnt, (res => {
-					if (res.data.rc == that.$util.RC.SUCCESS) {
-						that.$message({
-							message: '添加成功',
-							type: 'success'
-						});
-						that.$router.push('/contentList')
-					} else {
-						this.$message({
-							message: res.data.c,
-							type: 'warning'
-						});
-						that.imgList = []
-					}
-				}))
-			},
-			getChannels() {
-				let cnt = {
-					module: this.$constData.module,
-					status: 0,
-					//tags: tags, 
-					count: 20,
-					offset: 0,
-				};
-				this.$api.getChannels(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.channelList = this.$util.tryParseJson(res.data.c)
-					}
-				})
-			},
-			getHomeTag() {
-				let cnt = {
-					moduleId: this.$constData.module,
-					status: 1,
-					group: '首页', 
-					count: 20,
-					offset: 0,
-				};
-				this.$api.getContentTag(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.homeTag = this.$util.tryParseJson(res.data.c)
-					}
-				})
-			},
-			getChannelContentTag() {
-				this.channelTagName=''
-				let cnt = {
-					moduleId: this.$constData.module,
-					channelId: this.upChannelId, 
-					status: 4,
-					count: 20,
-					offset: 0,
-				};
-				this.$api.getChannelContentTag(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.channelContentTag = this.$util.tryParseJson(res.data.c)
-					}
-				})
-			},
-		},
-		mounted() {
-			this.contentInfo = this.$route.params.info
-			this.title = this.contentInfo.title
-			let a = JSON.parse(this.contentInfo.data).editor
-			if (a != '' && a != undefined) {
-			    this.textList = a
-			    console.log(this.textList)
-				this.editor.txt ="54"
-			}
-			console.log(JSON.parse(this.contentInfo.data))
-			
-			
-			this.getHomeTag()
-			this.getChannels()
-			this.editor = new wangEditor('#editor')
-			this.editor.create()
-			let info = this.$route.params.info
-			if (info != undefined) {
-				this.title = info.title
-				this.upChannelId = info.upChannelId
-				this.status = info.status
-				this.power = info.power
-				this.contentType = info.type
-				
-				
-			}
-		}
-	}
+            //end
+        },
+        mounted() {
+            this.contentInfo = this.$route.params.info
+            console.log(this.contentInfo)
+            this.title = this.contentInfo.title
+            this.tagList = JSON.parse(this.contentInfo.tags)
+            this.status = this.contentInfo.status
+            this.show = JSON.parse(this.contentInfo.data).show
+            this.contentList = JSON.parse(this.contentInfo.data).editor
+        }
+    }
 </script>
 
-<style lang="scss" scoped>
-	.title-box {
-		font-size: 1.6rem;
-		line-height: 40px;
-		letter-spacing: 2px;
-		font-weight: 600;
-		color: #666;
-		text-align: right;
-	}
+<style scoped lang="scss">
+    .row-box {
+        background: #fff;
+        padding: 15px;
+        font-size: 1.6rem;
+        color: #666;
+        border-left: 4px solid #67C23A;
+
+    }
+
+    .row-box1 {
+        margin-top: 20px;
+        padding: 15px;
+        background: #fff;
+    }
+
+    .title-box {
+        font-size: 1.6rem;
+        line-height: 40px;
+        letter-spacing: 2px;
+        font-weight: 600;
+        color: #666;
+        text-align: right;
+    }
+
+    .text-box {
+        margin-left: 50px;
+    }
+
+    .row-box2 {
+        margin-top: 20px;
+    }
+
+    .row-box3 {
+        margin-top: 20px;
+        text-align: center;
+        padding-bottom: 20px;
+    }
+
+    .image-box {
+        margin-left: 50px;
+        width: 400px;
+        height: 300px;
+        overflow: hidden;
+        float: left;
+    }
+
+    .image-box img {
+        width: 400px;
+        height: 300px;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .image-load {
+        float: left;
+        margin-left: 50px;
+        line-height: 150px;
+    }
+
+    .el-tag + .el-tag {
+        margin-left: 10px;
+    }
+
+    .button-new-tag {
+        margin-left: 10px;
+        height: 32px;
+        line-height: 30px;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    .input-new-tag {
+        width: 90px;
+        margin-left: 10px;
+        vertical-align: bottom;
+    }
 </style>

@@ -77,7 +77,7 @@ const  menu=[
 	        },
 	        {
 	            path:'/channelTag',
-	            title:'专栏标签'
+	            title:'模板标签'
 	        }
 	    ]
 	},

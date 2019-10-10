@@ -31,6 +31,16 @@
 
 		<el-row>
 			<el-col :span="4">
+				<div class="title-box">你可输入的标签:</div>
+			</el-col>
+			<el-col :span="18">
+				<el-tag type="info" v-for="tag in vipTagList"  :key="tag.name">{{tag.name}}</el-tag>
+			</el-col>
+		</el-row>
+
+
+		<el-row>
+			<el-col :span="4">
 				<div class="title-box">标签:</div>
 			</el-col>
 			<el-col :span="18" class="text-box">
@@ -44,7 +54,7 @@
 			</el-col>
 		</el-row>
 
-		
+
 
 		<el-col :span="24" style="text-align: center">
 			<el-button style="padding: 1em 4em" type="primary" @click="createChannel">创建专栏</el-button>
@@ -57,6 +67,7 @@
 		name: "addSvip",
 		data() {
 			return {
+				vipTagList: '',
 				title: '',
 				imgSrc: '',
 				text: '',
@@ -75,16 +86,16 @@
 					text: this.text,
 					src: this.imgSrc
 				}
+				let vipTag = {
+					channel:this.tagList
+				}
 				let cnt = {
 					module: this.$constData.module,
-					title: this.title, 
-					status:this.status,
-					
-					tags: JSON.stringify(this.tagList), // String 标签
-					//data: JSON.stringify(data), // String 专栏数据
+					title: this.title,
+					status: this.status,
+					tags: JSON.stringify(vipTag), 
 				}
-					console.log(JSON.stringify(this.tagList))
-				
+
 				this.$api.createChannel(cnt, (res => {
 					if (res.data.rc == that.$util.RC.SUCCESS) {
 						that.$message({
@@ -123,10 +134,23 @@
 				this.inputVisible = false;
 				this.inputValue = '';
 				console.log(this.tagList)
+			},
+			getContentTag() {
+				let cnt = {
+					moduleId: this.$constData.module,
+					group: 'vip', // String <选填> 分组
+					status: 1, // Byte <选填> 状态
+					count: 20, // Integer 
+					offset: 0, // Integer 
+				};
+				this.$api.getContentTag(cnt, (res) => {
+					this.vipTagList = this.$util.tryParseJson(res.data.c)
+					console.log(this.vipTagList)
+				})
 			}
-
-			//end
-
+		},
+		mounted(){
+			this.getContentTag()
 		}
 	}
 </script>

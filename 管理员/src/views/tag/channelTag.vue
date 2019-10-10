@@ -38,6 +38,8 @@
 			<el-table :data="tableData" border style="width: 100%">
 				<el-table-column prop="name" label="名称" width="400">
 				</el-table-column>
+				<el-table-column prop="conGroup" label="所属模块" width="400" :formatter="conGroupFliter">
+				</el-table-column>
 				<el-table-column prop="status" label="状态" :formatter="tagStatusFliter">
 				</el-table-column>
 				<el-table-column label="操作" width="100">
@@ -119,7 +121,14 @@
 					}
 				}
 			},
-
+			conGroupFliter(row, col, val) {
+				let TaskType = this.TaskType
+				for (let i = 0; i < TaskType.length; i++) {
+					if (TaskType[i].value == val) {
+						return TaskType[i].name
+					}
+				}
+			},
 
 
 			/*获取内容列表*/
