@@ -8,7 +8,6 @@
 				</el-input>
 			</el-col>
 		</el-row>
-
 		<el-row style="padding: 20px">
 			<el-col :span="2" style="min-height: 20px"></el-col>
 			<el-col :span="20">
@@ -25,7 +24,6 @@
 				</el-input>
 			</el-col>
 		</el-row>
-
 		<el-row style="padding: 20px">
 			<el-col :span="2" style="min-height: 20px"></el-col>
 			<el-col :span="20">
@@ -34,7 +32,6 @@
 				</el-input>
 			</el-col>
 		</el-row>
-		
 		<el-row style="margin-bottom: 10px">
 			<el-col :span="8">
 				<el-form label-width="80px">
@@ -56,7 +53,6 @@
 					</el-form-item>
 				</el-form>
 			</el-col>
-			
 			<el-col :span="8">
 				<el-form label-width="80px">
 					<el-form-item label="初始状态">
@@ -67,7 +63,6 @@
 					</el-form-item>
 				</el-form>
 			</el-col>
-			
 			<el-col :span="8">
 				<el-form label-width="80px">
 					<el-form-item label="首页标签">
@@ -78,7 +73,6 @@
 					</el-form-item>
 				</el-form>
 			</el-col>
-			
 			<el-col :span="8">
 				<el-form label-width="80px">
 					<el-form-item label="选择专栏">
@@ -89,7 +83,6 @@
 					</el-form-item>
 				</el-form>
 			</el-col>
-			
 			<el-col :span="8">
 				<el-form label-width="80px">
 					<el-form-item label="所属课程">
@@ -101,7 +94,6 @@
 				</el-form>
 			</el-col>
 		</el-row>
-
 		<el-row style="margin-top: 20px">
 			<el-button type="primary" @click="addContent" style="margin: 0 auto;display: block;padding: 15px 50px">提交
 			</el-button>
@@ -118,10 +110,10 @@
 		name: "addVideoContent",
 		data() {
 			return {
-				channelTagName:'',
-				channelContentTag:'',
-				homeTagName:'',
-				homeTag:'',
+				channelTagName: '',
+				channelContentTag: '',
+				homeTagName: '',
+				homeTag: '',
 				channelList: [{
 					title: '',
 					id: 0,
@@ -157,9 +149,7 @@
 				videoSrc: [],
 				src: '',
 				imgSrc: '',
-
 			}
-
 		},
 		methods: {
 			addContent() {
@@ -171,21 +161,19 @@
 					imgSrc: this.imgSrc
 				}
 				let cid = `{"homeCotent":["${this.homeTagName}"]}`
-				if(this.upChannelId != '' && this.channelTagName != ''){
+				if (this.upChannelId != '' && this.channelTagName != '') {
 					cid = `{"t${this.upChannelId}":["${this.channelTagName}"],"homeCotent":["${this.homeTagName}"]}`
 				}
 				let cnt = {
 					module: this.$constData.module,
-					type: 3, // Byte 内容类型
-					status: this.status, // Byte 状态
+					type: 3,
+					status: this.status,
 					power: this.power,
-					upUserId: 401770184378345, // Long 上传用户编号
+					upUserId: 401770184378345,
 					upChannelId: this.upChannelId,
-					tags:  JSON.parse(cid), // JSONObject <选填> 标签
-					title: this.title, // String 标题
-					data: dataUrl, // String 数据
-					// proviteData: proviteData, // String <选填> 私密信息
-					// ext: ext, // String <选填> 扩展信息
+					tags: JSON.parse(cid),
+					title: this.title,
+					data: dataUrl,
 				}
 				if (this.upChannelId != '') {
 					cnt.upChannelId = this.upChannelId
@@ -204,7 +192,6 @@
 						});
 					}
 				}))
-
 			},
 			getChannels() {
 				let cnt = {
@@ -224,7 +211,7 @@
 				let cnt = {
 					moduleId: this.$constData.module,
 					status: 1,
-					group: '首页', 
+					group: '首页',
 					count: 20,
 					offset: 0,
 				};
@@ -235,10 +222,10 @@
 				})
 			},
 			getChannelContentTag() {
-				this.channelTagName=''
+				this.channelTagName = ''
 				let cnt = {
 					moduleId: this.$constData.module,
-					channelId: this.upChannelId, 
+					channelId: this.upChannelId,
 					status: 4,
 					count: 20,
 					offset: 0,
@@ -250,14 +237,11 @@
 				})
 			},
 		},
-
 		mounted() {
 			this.getHomeTag()
 			this.getChannels()
 			let info = this.$route.params.info
-			console.log(info)
 			if (info != undefined) {
-				console.log(info)
 				this.upChannelId = info.id
 				this.paidIndex = true
 			}

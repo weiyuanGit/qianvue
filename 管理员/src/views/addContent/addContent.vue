@@ -85,7 +85,6 @@
 				</el-form>
 			</el-col>
 		</el-row>
-
 		<el-row style="margin-top: 20px">
 			<el-button type="primary" @click="subBtn" style="margin: 0 auto;display: block;padding: 15px 50px">提交
 			</el-button>
@@ -96,7 +95,6 @@
 
 <script>
 	import wangEditor from 'wangeditor'
-
 	export default {
 		name: "addContent",
 		data() {
@@ -108,11 +106,9 @@
 				homeTag:'',
 				editor: {},
 				imgList: [],
-
 				tag: '',
 				paidIndex: false,
 				videoSrc: [],
-
 				// paid: 0,
 				upChannelId: '',
 				channelList: [{
@@ -125,17 +121,13 @@
 				status: '',
 				contentType: '',
 				userId: 401770184378345,
-
 				typeList: this.$constData.typeList,
 				statusList: this.$constData.statusList,
 				powerList: this.$constData.powerList,
 				showList: this.$constData.showList,
-
 			}
-
 		},
 		methods: {
-
 			subBtn() {
 				let that = this
 				let a = this.editor.txt.getJSON()
@@ -173,12 +165,10 @@
 					status: this.status,
 					power: this.power,
 					upUserId: this.userId,
-					upChannelId: this.upChannelId, //上传专栏编号
+					upChannelId: this.upChannelId, 
 					tags: JSON.parse(cid),
 					title: this.title,
 					data: JSON.stringify(data),
-					//proviteData: proviteData, // String <选填> 私密信息
-					//ext: ext, // String <选填> 扩展信息
 				}
 				if (that.upChannelId != '') {
 					cnt.upChannelId = parseInt(that.upChannelId)
@@ -203,7 +193,6 @@
 				let cnt = {
 					module: this.$constData.module,
 					status: 0,
-					//tags: tags, 
 					count: 20,
 					offset: 0,
 				};

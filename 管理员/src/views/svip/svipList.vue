@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-row class="title-box">
-			信息信息表付个
+			专栏信息表
 		</el-row>
 		<el-row class="content-box">
 			<el-row>
@@ -19,28 +19,26 @@
 				<el-button type="primary" @click="searchBtn">查询</el-button>
 				<el-button type="primary" @click="getContentsBtn">默认列表</el-button>
 			</el-row>
-
 		</el-row>
 		<el-row class="table-box">
 			<el-table :data="tableData" border style="width: 100%">
-				<el-table-column prop="id" label="编号" width="400">
+				<el-table-column prop="id" label="编号" width="200">
 				</el-table-column>
 				<el-table-column prop="title" label="名称" width="400">
 				</el-table-column>
-				<el-table-column prop="createTime" label="发布日期" :formatter="timeFliter">
+				<el-table-column prop="createTime" width="200" label="发布日期" :formatter="timeFliter">
 				</el-table-column>
 				<el-table-column prop="status" label="状态" :formatter="statusFliter">
 				</el-table-column>
 				<el-table-column label="操作" width="100">
 					<template slot-scope="scope">
-						<el-button @click="infoBtn(scope.row)" type="text" size="small">查看详情</el-button>
-						<el-button type="text" size="small">编辑</el-button>
-						<el-button @click="closeBtn(scope.row)" type="text" size="small">禁用</el-button>
+						<el-button @click="infoBtn(scope.row)" type="text" size="small">编辑</el-button>
+						<el-button @click="closeBtn(scope.row)" type="text" size="small" v-if="scope.row.status==0">禁用</el-button>
+						<el-button @click="closeBtn(scope.row)" type="text" size="small" v-if="scope.row.status==1">启用</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
 		</el-row>
-
 		<el-row style="height: 80px;">
 			<el-col :span="24">
 				当前页数：{{page}}
@@ -65,9 +63,7 @@
 					status: '',
 					power: '',
 					tags: '',
-
 				},
-
 				typeList: this.$constData.typeList,
 				statusList: this.$constData.statusList,
 				powerList: this.$constData.powerList,
@@ -107,14 +103,8 @@
 					}
 				}
 			},
-
-
-
-			/*获取内容列表*/
+			/*获取专栏列表*/
 			getContents(cnt) {
-				console.log(cnt)
-				//this.$util.RC.SUCCESS=> 'succ'
-				//this.$util.tryParseJson => json.parse()
 				this.$api.getChannels(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.tableData = this.$util.tryParseJson(res.data.c)
@@ -126,10 +116,8 @@
 					} else {
 						this.pageOver = false
 					}
-					console.log(this.$util.tryParseJson(res.data.c))
 				})
 			},
-
 			/* 分页*/
 			changePage(page) {
 				this.page = page
@@ -143,25 +131,18 @@
 			},
 			/* 查询数据*/
 			searchBtn() {
-				console.log(this.searchData)
 				this.page = 1
 				let cnt = {
 					module: this.$constData.module,
 					count: this.count,
 					offset: (this.page - 1) * this.count
 				}
-
-				
 				if (this.searchData.status) {
 					cnt.status = this.searchData.status
 				}
-				
 				this.getContents(cnt)
 			},
-
-
-			
-			/* 禁用专栏*/
+			/* 禁用/启用专栏*/
 			closeBtn(info) {
 				this.$confirm('是否继续?', '提示', {
 					confirmButtonText: '确定',
@@ -169,9 +150,14 @@
 					type: 'warning'
 				}).then(async () => {
 					let cnt = {
-						modeuleId:this.$constData.module,
+						modeuleId: this.$constData.module,
 						channelId: info.id,
-						bool:true,
+						bool: true,
+					}
+					if (info.status == 1) {
+						cnt.bool = false
+					} else if (info.status == 0) {
+						cnt.bool = true
 					}
 					this.$api.banChannel(cnt, (res) => {
 						if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -193,8 +179,6 @@
 					});
 				});
 			},
-
-
 			//查看 详情
 			infoBtn(info) {
 				this.$router.push({
@@ -205,7 +189,6 @@
 					}
 				})
 			},
-
 			//获取默认列表
 			getContentsBtn() {
 				this.searchData.type = ''
@@ -218,10 +201,18 @@
 					count: this.count,
 					offset: (this.page - 1) * this.count
 				}
-				//this.getContents(cnt)
-			}
-
-
+				this.getContents(cnt)
+			},
+			//编辑专栏页
+			infoBtn(info) {
+				this.$router.push({
+					path: '/svipInfoList',
+					name: 'svipInfoList',
+					params: {
+						info: info
+					}
+				})
+			},
 		},
 		mounted() {
 			//获取内容列表
@@ -231,8 +222,6 @@
 				offset: (this.page - 1) * this.count
 			}
 			this.getContents(cnt)
-
-
 		}
 	}
 </script>

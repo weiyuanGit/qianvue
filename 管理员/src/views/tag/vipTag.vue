@@ -9,7 +9,7 @@
 					<el-form label-width="80px">
 						<el-form-item label="状态">
 							<el-select v-model="searchData.status" placeholder="请选择状态">
-								<el-option v-for="(item,index) in generalStatus" :key="index" :label="item.name" :value="item.value"></el-option>
+								<el-option v-for="(item,index) in tagstatus" :key="index" :label="item.name" :value="item.value"></el-option>
 							</el-select>
 						</el-form-item>
 					</el-form>
@@ -35,14 +35,12 @@
 				</el-table-column>
 				<el-table-column label="操作" width="100">
 					<template slot-scope="scope">
-						<el-button @click="infoBtn(scope.row)" type="text" size="small">查看详情</el-button>
-						<el-button type="text" size="small">编辑</el-button>
-						<el-button @click="closeBtn(scope.row)" type="text" size="small">禁用</el-button>
+						<el-button @click="closeBtn(scope.row)" type="text" size="small" v-if="scope.row.status==1">禁用</el-button>
+						<el-button @click="closeBtn(scope.row)" type="text" size="small" v-if="scope.row.status==0">启用</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
 		</el-row>
-
 		<el-row style="height: 80px;">
 			<el-col :span="24">
 				当前页数：{{page}}
@@ -58,7 +56,7 @@
 		name: "homeTag",
 		data() {
 			return {
-				tagTitle:'',
+				tagTitle: '',
 				tableData: [],
 				count: 10,
 				page: 1,
@@ -70,11 +68,7 @@
 					tags: '',
 
 				},
-
-				typeList: this.$constData.typeList,
 				tagstatus: this.$constData.tagstatus,
-				powerList: this.$constData.powerList,
-				generalStatus: this.$constData.generalStatus,
 			}
 		},
 		methods: {
@@ -110,35 +104,25 @@
 					}
 				}
 			},
-
-
-
-			/*获取内容列表*/
+			/*获取vip页标签列表*/
 			getContents(cnt) {
-				console.log(cnt)
-				//this.$util.RC.SUCCESS=> 'succ'
-				//this.$util.tryParseJson => json.parse()
-				cnt.status = 1,
-					this.$api.getContentTag(cnt, (res) => {
-						console.log(res)
-						if (res.data.rc == this.$util.RC.SUCCESS) {
-							this.tableData = this.$util.tryParseJson(res.data.c)
-						} else {
-							this.tableData = []
-						}
-						if (this.tableData.length < this.count) {
-							this.pageOver = true
-						} else {
-							this.pageOver = false
-						}
-						console.log(this.$util.tryParseJson(res.data.c))
-					})
+				this.$api.getContentTag(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.tableData = this.$util.tryParseJson(res.data.c)
+					} else {
+						this.tableData = []
+					}
+					if (this.tableData.length < this.count) {
+						this.pageOver = true
+					} else {
+						this.pageOver = false
+					}
+				})
 			},
-
 			/* 分页*/
 			changePage(page) {
 				this.page = page
-				//获取内容列表
+				//获取列表
 				let cnt = {
 					moduleId: this.$constData.module,
 					count: this.count,
@@ -148,25 +132,17 @@
 			},
 			/* 查询数据*/
 			searchBtn() {
-				console.log(this.searchData)
 				this.page = 1
 				let cnt = {
 					moduleId: this.$constData.module,
+					group: 'vip',
+					status: this.searchData.status,
 					count: this.count,
 					offset: (this.page - 1) * this.count
 				}
-
-
-				if (this.searchData.status) {
-					cnt.status = this.searchData.status
-				}
-
 				this.getContents(cnt)
 			},
-
-
-
-			/* 禁用标签*/
+			/* 禁用/启用标签*/
 			closeBtn(info) {
 				this.$confirm('是否继续?', '提示', {
 					confirmButtonText: '确定',
@@ -176,8 +152,13 @@
 					let cnt = {
 						moduleId: this.$constData.module,
 						group: 'vip',
-						name: info.name, 
+						name: info.name,
 						status: 0,
+					}
+					if (info.status == 1) {
+						cnt.status = 0
+					} else if (info.status == 0) {
+						cnt.status = 1
 					}
 					this.$api.editteContentTag(cnt, (res) => {
 						if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -220,18 +201,6 @@
 					}
 				})
 			},
-
-			//查看 详情
-			infoBtn(info) {
-				this.$router.push({
-					path: '/svipInfoList',
-					name: 'svipInfoList',
-					params: {
-						info: info
-					}
-				})
-			},
-
 			//获取默认列表
 			getContentsBtn() {
 				this.searchData.type = ''
@@ -245,13 +214,11 @@
 					count: this.count,
 					offset: (this.page - 1) * this.count,
 				}
-				//this.getContents(cnt)
+				this.getContents(cnt)
 			}
-
-
 		},
 		mounted() {
-			//获取内容列表
+			//获取vip页标签列表
 			let cnt = {
 				moduleId: this.$constData.module,
 				group: 'vip',
@@ -259,8 +226,6 @@
 				offset: (this.page - 1) * this.count,
 			}
 			this.getContents(cnt)
-
-
 		}
 	}
 </script>

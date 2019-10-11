@@ -34,7 +34,16 @@ const  menu=[
             {
                 path:'/addSvip',
                 title:'添加专栏'
-            }
+            },
+            {
+                path:'/addSvipTag',
+                title:'添加课程'
+            },
+			{
+			    path:'/svipTagList',
+			    title:'课程列表'
+			}
+			
         ]
     },
     {

@@ -7,9 +7,18 @@
 			<el-row>
 				<el-col :span="8">
 					<el-form label-width="80px">
-						<el-form-item label="状态">
-							<el-select v-model="searchData.status" placeholder="请选择状态">
-								<el-option v-for="(item,index) in generalStatus" :key="index" :label="item.name" :value="item.value"></el-option>
+						<el-form-item label="任务类型">
+							<el-select v-model="searchData.status" placeholder="请选择">
+								<el-option v-for="(item,index) in TaskType" :key="index" :label="item.name" :value="item.value"></el-option>
+							</el-select>
+						</el-form-item>
+					</el-form>
+				</el-col>
+				<el-col :span="8">
+					<el-form label-width="80px">
+						<el-form-item label="模板类型">
+							<el-select v-model="searchData.type" placeholder="请选择">
+								<el-option v-for="(item,index) in templateType" :key="index" :label="item.name" :value="item.value"></el-option>
 							</el-select>
 						</el-form-item>
 					</el-form>
@@ -20,7 +29,6 @@
 				<el-button type="primary" @click="getContentsBtn">默认列表</el-button>
 				<el-button type="primary" style="float: right;margin-right: 50px" @click="addTemplate">添加模板</el-button>
 			</el-row>
-
 		</el-row>
 		<el-row class="table-box">
 			<el-table :data="tableData" border style="width: 100%">
@@ -34,14 +42,11 @@
 				</el-table-column>
 				<el-table-column label="操作" width="100">
 					<template slot-scope="scope">
-						<!-- <el-button @click="infoBtn(scope.row)" type="text" size="small">查看详情</el-button> -->
 						<el-button @click="delBtn(scope.row)" type="text" size="small">删除</el-button>
-						<el-button type="text" size="small">详情</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
 		</el-row>
-
 		<el-row style="height: 80px;">
 			<el-col :span="24">
 				当前页数：{{page}}
@@ -66,9 +71,7 @@
 					status: '',
 					power: '',
 					tags: '',
-
 				},
-
 				typeList: this.$constData.typeList,
 				statusList: this.$constData.statusList,
 				powerList: this.$constData.powerList,
@@ -126,14 +129,9 @@
 					}
 				}
 			},
-
 			/*获取内容列表*/
 			getContents(cnt) {
-				console.log(cnt)
-				//this.$util.RC.SUCCESS=> 'succ'
-				//this.$util.tryParseJson => json.parse()
 				this.$api.getTemplates(cnt, (res) => {
-					console.log(this.$util.tryParseJson(res.data.c))
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.tableData = this.$util.tryParseJson(res.data.c)
 					} else {
@@ -144,10 +142,8 @@
 					} else {
 						this.pageOver = false
 					}
-					console.log(this.$util.tryParseJson(res.data.c))
 				})
 			},
-
 			/* 分页*/
 			changePage(page) {
 				this.page = page
@@ -161,23 +157,16 @@
 			},
 			/* 查询数据*/
 			searchBtn() {
-				console.log(this.searchData)
 				this.page = 1
 				let cnt = {
 					module: this.$constData.module,
+					type: this.searchData.status,
+					tempType: this.searchData.type,
 					count: this.count,
 					offset: (this.page - 1) * this.count
 				}
-
-
-				if (this.searchData.status) {
-					cnt.status = this.searchData.status
-				}
-
 				this.getContents(cnt)
 			},
-
-
 			/* 删除模板*/
 			delBtn(info) {
 				this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -208,17 +197,10 @@
 					});
 				});
 			},
-			
-			
-			
-
 			//添加模板
 			addTemplate() {
 				this.$router.push('/addTemplate')
 			},
-
-
-
 			//查看 详情
 			infoBtn(info) {
 				this.$router.push({
@@ -229,7 +211,6 @@
 					}
 				})
 			},
-
 			//获取默认列表
 			getContentsBtn() {
 				this.searchData.type = ''
@@ -242,10 +223,8 @@
 					count: this.count,
 					offset: (this.page - 1) * this.count
 				}
-				//this.getContents(cnt)
-			}
-
-
+				this.getContents(cnt)
+			},
 		},
 		mounted() {
 			//获取内容列表
@@ -255,8 +234,6 @@
 				offset: (this.page - 1) * this.count
 			}
 			this.getContents(cnt)
-
-
 		}
 	}
 </script>

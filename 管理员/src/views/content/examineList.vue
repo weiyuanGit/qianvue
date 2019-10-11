@@ -33,12 +33,10 @@
 					</el-form>
 				</el-col>
 			</el-row>
-
 			<el-row>
 				<el-button type="primary" @click="searchBtn">查询</el-button>
 				<el-button type="primary" @click="getContentsBtn">默认列表</el-button>
 			</el-row>
-
 		</el-row>
 		<el-row class="table-box">
 			<el-table :data="tableData" border style="width: 100%">
@@ -61,7 +59,6 @@
 				</el-table-column>
 			</el-table>
 		</el-row>
-
 		<el-row style="height: 80px;">
 			<el-col :span="24">
 				当前页数：{{page}}
@@ -86,9 +83,7 @@
 					status: '',
 					power: '',
 					tags: '',
-
 				},
-
 				typeList: this.$constData.typeList,
 				statusList: this.$constData.statusList,
 				powerList: this.$constData.powerList,
@@ -127,29 +122,22 @@
 					}
 				}
 			},
-
-
-
 			/*获取内容列表*/
 			getContents(cnt) {
-				//this.$util.RC.SUCCESS=> 'succ'
-				//this.$util.tryParseJson => json.parse()
 				cnt.status = 1,
-				this.$api.getContents(cnt, (res) => {
-					if (res.data.rc == this.$util.RC.SUCCESS) {
-						this.tableData = this.$util.tryParseJson(res.data.c)
-					} else {
-						this.tableData = []
-					}
-					if (this.tableData.length < this.count) {
-						this.pageOver = true
-					} else {
-						this.pageOver = false
-					}
-					console.log(this.tableData)
-				})
+					this.$api.getContents(cnt, (res) => {
+						if (res.data.rc == this.$util.RC.SUCCESS) {
+							this.tableData = this.$util.tryParseJson(res.data.c)
+						} else {
+							this.tableData = []
+						}
+						if (this.tableData.length < this.count) {
+							this.pageOver = true
+						} else {
+							this.pageOver = false
+						}
+					})
 			},
-
 			/* 分页*/
 			changePage(page) {
 				this.page = page
@@ -163,7 +151,6 @@
 			},
 			/* 查询数据*/
 			searchBtn() {
-				console.log(this.searchData)
 				this.page = 1
 				let cnt = {
 					module: this.$constData.module,
@@ -185,7 +172,6 @@
 				}
 				this.getContents(cnt)
 			},
-
 			/* 通过审核*/
 			passBtn(info) {
 				this.$confirm('此操作将审核通过该内容, 是否继续?', '提示', {
@@ -195,7 +181,7 @@
 				}).then(async () => {
 					let cnt = {
 						id: info.id,
-						bool:true,
+						bool: true,
 					}
 					this.$api.auditContent(cnt, (res) => {
 						if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -226,7 +212,7 @@
 				}).then(async () => {
 					let cnt = {
 						id: info.id,
-						bool:false,
+						bool: false,
 					}
 					this.$api.auditContent(cnt, (res) => {
 						if (res.data.rc == this.$util.RC.SUCCESS) {
@@ -248,8 +234,6 @@
 					});
 				});
 			},
-			
-			
 			/* 删除内容*/
 			delBtn(info) {
 				this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -280,8 +264,6 @@
 					});
 				});
 			},
-
-
 			//查看 详情
 			infoBtn(info) {
 				this.$router.push({
@@ -292,7 +274,6 @@
 					}
 				})
 			},
-
 			//获取默认列表
 			getContentsBtn() {
 				this.searchData.type = ''
@@ -317,8 +298,6 @@
 					}
 				})
 			},
-
-
 		},
 		mounted() {
 			//获取内容列表
@@ -328,8 +307,6 @@
 				offset: (this.page - 1) * this.count
 			}
 			this.getContents(cnt)
-
-
 		}
 	}
 </script>

@@ -16,11 +16,15 @@ const addVideoContent = ()=>import('./views/addContent/addVideoContent')
 const svipList = () => import('./views/svip/svipList')
 const svipInfoList = () => import('./views/svip/svipInfoList')
 const addSvip = () => import('./views/svip/addSvip')
+const addSvipTag = () => import('./views/svip/addSvipTag')
+const svipTagList = () => import('./views/svip/svipTagList')
+const editSvipTagList = () => import('./views/svip/editSvipTagList')
 
 //任务墙
 const taskList = () => import('./views/taskPage/taskList')
 const taskInfo = () => import('./views/taskPage/taskInfo')
 const examineTask = () => import('./views/taskPage/examineTask')
+
 
 //模板
 const templateList = () => import('./views/template/templateList')
@@ -98,13 +102,23 @@ export default new Router({
                     path: '/svipInfoList',
                     name: 'svipInfoList',
                     component: svipInfoList
-                },
-                {
+                },{
                     path: '/addSvip',
                     name: 'addSvip',
                     component: addSvip
+                },{
+                    path: '/addSvipTag',
+                    name: 'addSvipTag',
+                    component: addSvipTag
+                },{
+                    path: '/svipTagList',
+                    name: 'svipTagList',
+                    component: svipTagList
+                },{
+                    path: '/editSvipTagList',
+                    name: 'editSvipTagList',
+                    component: editSvipTagList
                 },
-
                 //任务墙
                 {
                     path: '/taskInfo',

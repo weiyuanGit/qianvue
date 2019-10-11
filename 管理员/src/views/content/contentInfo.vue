@@ -68,9 +68,7 @@
             let a = JSON.parse(this.contentInfo.data).editor
             if (a != '' && a != undefined) {
                 this.textList = a
-                console.log(this.textList)
             }
-            console.log(JSON.parse(this.contentInfo.data))
         }
     }
 </script>

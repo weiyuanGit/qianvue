@@ -13,6 +13,11 @@ console.log('开始调用ctrl');
 api.getContents	 = function (cnt,callback) {
     util.call(baseUrl+'/content/getContents', cnt, callback)
 }
+//修改内容 
+api.editContent	 = function (cnt,callback) {
+    util.call(baseUrl+'/content/editContent', cnt, callback)
+}
+
 //获取专栏
 api.getChannels	 = function (cnt,callback) {
     util.call(baseUrl+'/channel/getChannels', cnt, callback)
@@ -91,8 +96,27 @@ api.editteContentTag = function (cnt,callback) {
 api.getChannelContentTag = function (cnt,callback) {
     util.call(baseUrl+'/channelTag/getChannelContentTag', cnt, callback)
 }
-
-	
+//获取课程
+api.getChannelContentTag = function (cnt,callback) {
+    util.call(baseUrl+'/channelTag/getChannelContentTag', cnt, callback)
+}
+//创建课程
+api.createChannelContentTag = function (cnt,callback) {
+    util.call(baseUrl+'/channelTag/createChannelContentTag', cnt, callback)
+}
+//查询课程
+api.getChannelContentTag = function (cnt,callback) {
+    util.call(baseUrl+'/channelTag/getChannelContentTag', cnt, callback)
+}
+//修改课程
+api.updateChannelContentTag = function (cnt,callback) {
+    util.call(baseUrl+'/channelTag/updateChannelContentTag', cnt, callback)
+}
+//修改专栏
+api.editChannel = function (cnt,callback) {
+    util.call(baseUrl+'/channel/editChannel', cnt, callback)
+}
+		
 
 export default api
 
