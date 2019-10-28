@@ -59,7 +59,7 @@
 				tagList: [],
 				inputVisible: false,
 				inputValue: '',
-				status: '',
+				status: this.$constData.statusList[3].value,
 				generalStatus: this.$constData.generalStatus,
 				statusList: this.$constData.statusList,
 			}
@@ -74,6 +74,27 @@
 				}
 			},
 			createChannel() {
+				if(this.title == ''){
+					this.$message({
+						message: '请输入标题',
+						type: 'warning'
+					});
+					return
+				}
+				if(this.price == ''){
+					this.$message({
+						message: '请输入价格',
+						type: 'warning'
+					});
+					return
+				}
+				if(this.upChannelId == ''){
+					this.$message({
+						message: '请选择专栏',
+						type: 'warning'
+					});
+					return
+				}
 				let cnt = {
 					moduleId: this.$constData.module,
 					channelId: this.upChannelId,
@@ -93,6 +114,7 @@
 							type: 'warning'
 						});
 					}
+					this.$router.push('/svipList')
 				}))
 			},
 			getChannels() {

@@ -35,10 +35,13 @@
 				</el-table-column>
 				<el-table-column prop="status" label="状态" :formatter="tagStatusFliter">
 				</el-table-column>
-				<el-table-column label="操作" width="100">
+				<el-table-column prop="sortSize" label="排序" >
+				</el-table-column>
+				<el-table-column label="操作" width="400">
 					<template slot-scope="scope">
 						<el-button @click="closeBtn(scope.row)" type="text" size="small" v-if="scope.row.status==1">禁用</el-button>
 						<el-button @click="closeBtn(scope.row)" type="text" size="small" v-if="scope.row.status==0">启用</el-button>
+						<el-button @click="updateBtn(scope.row)" type="text" size="small">设置排序</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -218,6 +221,46 @@
 					offset: (this.page - 1) * this.count,
 				}
 				this.getContents(cnt)
+			},
+			updateBtn(info) {
+				this.$prompt('请输入排序大小,数值越大越靠前', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+				}).then(({
+					value
+				}) => {
+					let cnt = {
+						moduleId: 1170,
+						group: '首页',
+						name: info.name,
+						sort: value
+					}
+					this.$api.editteContentTag(cnt, (res) => {
+						if (res.data.rc == this.$util.RC.SUCCESS) {
+							this.$message({
+								type: 'success',
+								message: '成功!'
+							});
+						} else {
+							this.$message({
+								type: 'error',
+								message: '操作失败!'
+							});
+						}
+						let cnt = {
+							moduleId: this.$constData.module,
+							group: '首页',
+							count: this.count,
+							offset: (this.page - 1) * this.count,
+						}
+						this.getContents(cnt)
+					})
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '取消输入'
+					});
+				});
 			}
 		},
 		mounted() {

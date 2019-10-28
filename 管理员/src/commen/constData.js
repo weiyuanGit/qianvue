@@ -3,7 +3,6 @@
 const constData = {}
 
 constData.module = 1170,
-constData.chnnelTagmodule = 11705
 
 /**contentList*/
 constData.statusList = [{
@@ -95,21 +94,22 @@ constData.generalStatus = [{
 ]
 constData.TaskType = [{
 		name: '求表扬',
-		value: 0,
+		value: '求表扬模板标签',
 	},
 	{
 		name: '求陪玩',
-		value: 1,
+		value: '求陪玩模板标签',
 	},
 	{
 		name: '分享',
-		value: 2,
+		value: '分享模板标签',
 	},
 	{
 		name: '制作',
-		value: 3,
+		value: '制作模板标签',
 	}
 ]
+
 constData.templateType = [{
 		name: '图文',
 		value: 0,
@@ -138,6 +138,19 @@ constData.tagstatus =  [{
 	{
 		name: '禁用',
 		value: 0,
+	}
+]
+constData.taskStatus =  [{
+		name: '未审核',
+		value: '0',
+	},
+	{
+		name: '平台审核已通过',
+		value: 1,
+	},
+	{
+		name: '平台审核未通过',
+		value: 10,
 	}
 ]
 

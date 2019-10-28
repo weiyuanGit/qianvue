@@ -29,9 +29,8 @@
 				</el-table-column>
 				<el-table-column label="操作" width="100">
 					<template slot-scope="scope">
-						<!-- <el-button @click="infoBtn(scope.row)" type="text" size="small">查看详情</el-button> -->
 						<el-button @click="delBtn(scope.row)" type="text" size="small">删除</el-button>
-						<el-button  type="text" size="small">详情</el-button>
+						<el-button  type="text" @click="infoBtn(scope.row)" size="small">详情</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -67,7 +66,7 @@
 				typeList: this.$constData.typeList,
 				statusList: this.$constData.statusList,
 				powerList: this.$constData.powerList,
-				generalStatus: this.$constData.generalStatus,
+				generalStatus: this.$constData.taskStatus,
 			}
 		},
 		methods: {
@@ -104,13 +103,8 @@
 				}
 			},
 
-
-
 			/*获取内容列表*/
 			getContents(cnt) {
-				console.log(cnt)
-				//this.$util.RC.SUCCESS=> 'succ'
-				//this.$util.tryParseJson => json.parse()
 				this.$api.getTasks(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.tableData = this.$util.tryParseJson(res.data.c).list
@@ -122,7 +116,6 @@
 					} else {
 						this.pageOver = false
 					}
-					console.log(this.$util.tryParseJson(res.data.c))
 				})
 			},
 
@@ -139,19 +132,16 @@
 			},
 			/* 查询数据*/
 			searchBtn() {
-				console.log(this.searchData)
 				this.page = 1
 				let cnt = {
 					module: this.$constData.module,
 					count: this.count,
 					offset: (this.page - 1) * this.count
 				}
-
-				
 				if (this.searchData.status) {
 					cnt.status = this.searchData.status
 				}
-				
+				console.log(cnt)
 				this.getContents(cnt)
 			},
 
@@ -193,8 +183,8 @@
 			//查看 详情
 			infoBtn(info) {
 				this.$router.push({
-					path: '/svipInfoList',
-					name: 'svipInfoList',
+					path: '/taskInfo',
+					name: 'taskInfo',
 					params: {
 						info: info
 					}

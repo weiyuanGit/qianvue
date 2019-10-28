@@ -39,7 +39,7 @@ const userInfo = () => import('./views/user/userInfo')
 const homeTag = () => import('./views/tag/homeTag')
 const vipTag = () => import('./views/tag/vipTag')
 const channelTag = () => import('./views/tag/channelTag')
-
+const editTag = () => import('./views/tag/editTag')
 Vue.use(Router)
 
 export default new Router({
@@ -178,6 +178,10 @@ export default new Router({
 				    path: '/channelTag',
 				    name: 'channelTag',
 				    component: channelTag
+				},{
+				    path: '/editTag',
+				    name: 'editTag',
+				    component: editTag
 				},
             ]
         },

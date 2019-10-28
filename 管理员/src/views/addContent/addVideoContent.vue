@@ -118,11 +118,11 @@
 					title: '',
 					id: 0,
 				}],
-				status: '',
+				status: 4,
 				powerList: this.$constData.powerList,
 				statusList: this.$constData.statusList,
 				conType: '',
-				power: '',
+				power: 0,
 				text: '',
 				title: '',
 				userId: 400795534052038,
@@ -153,6 +153,13 @@
 		},
 		methods: {
 			addContent() {
+				if(this.title == '' || this.text == '' || this.imgSrc == '' || this.src == ''){
+					this.$message({
+						message: '请填写完整信息',
+						type: 'error'
+					});
+					return
+				}
 				let that = this
 				let dataUrl = {
 					url: this.src,
@@ -204,6 +211,11 @@
 				this.$api.getChannels(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.channelList = this.$util.tryParseJson(res.data.c)
+						let a = {
+							title:'无',
+							id:'',
+						}
+						this.channelList.push(a)
 					}
 				})
 			},

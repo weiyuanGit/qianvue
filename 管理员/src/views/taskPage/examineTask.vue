@@ -67,7 +67,7 @@
 				typeList: this.$constData.typeList,
 				statusList: this.$constData.statusList,
 				powerList: this.$constData.powerList,
-				generalStatus: this.$constData.generalStatus,
+				generalStatus: this.$constData.taskStatus,
 			}
 		},
 		methods: {
@@ -108,10 +108,6 @@
 
 			/*获取内容列表*/
 			getContents(cnt) {
-				console.log(cnt)
-				//this.$util.RC.SUCCESS=> 'succ'
-				//this.$util.tryParseJson => json.parse()
-				cnt.status =0,
 				this.$api.getTasks(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.tableData = this.$util.tryParseJson(res.data.c).list
@@ -123,7 +119,6 @@
 					} else {
 						this.pageOver = false
 					}
-					console.log(this.$util.tryParseJson(res.data.c))
 				})
 			},
 
@@ -140,20 +135,16 @@
 			},
 			/* 查询数据*/
 			searchBtn() {
-				console.log(this.searchData)
-				this.page = 1
-				let cnt = {
-					module: this.$constData.module,
-					count: this.count,
-					offset: (this.page - 1) * this.count
-				}
-
-				
-				if (this.searchData.status) {
-					cnt.status = this.searchData.status
-				}
-				
-				this.getContents(cnt)
+			this.page = 1
+			let cnt = {
+				module: this.$constData.module,
+				count: this.count,
+				offset: (this.page - 1) * this.count
+			}
+			if (this.searchData.status) {
+				cnt.status = this.searchData.status
+			}
+			this.getContents(cnt)
 			},
 
 
@@ -256,6 +247,7 @@
 			let cnt = {
 				module: this.$constData.module,
 				count: this.count,
+				status:0,
 				offset: (this.page - 1) * this.count
 			}
 			this.getContents(cnt)

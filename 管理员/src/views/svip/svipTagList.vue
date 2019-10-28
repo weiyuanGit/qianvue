@@ -113,7 +113,8 @@
 				this.page = page
 				//获取内容列表
 				let cnt = {
-					module: this.$constData.module,
+					moduleId: this.$constData.module,
+					status:4,
 					count: this.count,
 					offset: (this.page - 1) * this.count
 				}
@@ -143,7 +144,8 @@
 				this.searchData.tags = ''
 				this.page = 1
 				let cnt = {
-					module: this.$constData.module,
+					moduleId: this.$constData.module,
+					status:4,
 					count: this.count,
 					offset: (this.page - 1) * this.count
 				}
@@ -177,7 +179,8 @@
 			//获取内容列表
 			let cnt = {
 				moduleId: this.$constData.module,
-				channelId: this.upChannelId,
+				// channelId: this.upChannelId,
+				status:4,
 				count: this.count,
 				offset: (this.page - 1) * this.count
 			}

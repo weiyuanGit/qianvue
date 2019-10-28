@@ -117,9 +117,9 @@
 				}],
 				show: 0,
 				title: '',
-				power: '',
-				status: '',
-				contentType: '',
+				power: 0,
+				status: 4,
+				contentType: 5,
 				userId: 401770184378345,
 				typeList: this.$constData.typeList,
 				statusList: this.$constData.statusList,
@@ -129,6 +129,13 @@
 		},
 		methods: {
 			subBtn() {
+				if(this.title == ''){
+					this.$message({
+						message: '请填写标题',
+						type: 'error'
+					});
+					return
+				}
 				let that = this
 				let a = this.editor.txt.getJSON()
 				for (let i = 0; i < a.length; i++) {
@@ -199,6 +206,11 @@
 				this.$api.getChannels(cnt, (res) => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {
 						this.channelList = this.$util.tryParseJson(res.data.c)
+						let a = {
+							title:'无',
+							id:'',
+						}
+						this.channelList.push(a)
 					}
 				})
 			},
