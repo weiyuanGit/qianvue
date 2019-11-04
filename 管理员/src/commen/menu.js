@@ -87,6 +87,10 @@ const  menu=[
 	        {
 	            path:'/channelTag',
 	            title:'模板标签'
+	        },
+	        {
+	            path:'/tagGroup',
+	            title:'创建标签分组'
 	        }
 	    ]
 	},

@@ -8,6 +8,11 @@ import baseUrl from './url'
 let api = {};
 console.log('开始调用ctrl');
 
+//查询用户
+api.getUsers= function (cnt,callback) {
+    util.call(baseUrl+'/kkqtUser/getUsers', cnt, callback)
+}
+
 /** 内容相关*/
 //获取内容列表 
 api.getContents	 = function (cnt,callback) {
@@ -67,6 +72,15 @@ api.auditTask= function (cnt,callback) {
 api.getTags	 = function (cnt,callback) {
     util.call(baseUrl+'/contentTag/getContentTag', cnt, callback)
 }
+//创建标签分组
+api.createContentTagGroup = function (cnt,callback) {
+    util.call(baseUrl+'/contentTag/createContentTagGroup', cnt, callback)
+}
+//查询标签分组
+api.getContentTagGroup = function (cnt,callback) {
+    util.call(baseUrl+'/contentTag/getContentTagGroup', cnt, callback)
+}
+
 
 //获取模板列表
 api.getTemplates = function (cnt,callback) {
@@ -80,6 +94,7 @@ api.delemplates = function (cnt,callback) {
 api.addTemplate = function (cnt,callback) {
     util.call(baseUrl+'/task/createTemplates', cnt, callback)
 }
+
 //获取内容标签
 api.getContentTag = function (cnt,callback) {
     util.call(baseUrl+'/contentTag/getContentTag', cnt, callback)

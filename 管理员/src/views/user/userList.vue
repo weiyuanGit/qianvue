@@ -1,86 +1,165 @@
 <template>
-  <div>
-    <el-row :gutter="20">
-      <el-col :span="2" style="min-height: 20px"></el-col>
-      <el-col :span="16">
-        <el-table
-          :data="tableData"
-          stripe
-          style="width: 100%">
-          <el-table-column
-            prop="id"
-            label="用户ID"
-            width="180">
-          </el-table-column>
-          <el-table-column
-            prop="name"
-            label="用户名"
-            width="180">
-          </el-table-column>
-          <el-table-column
-            prop="title"
-            label="简介"
-            width="auto">
-          </el-table-column>
-
-          <!--              fixed="right"-->
-          <el-table-column
-            label="操作"
-            width="100">
-            <template slot-scope="scope">
-              <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-              <!--            <el-button type="text" size="small">编辑</el-button>-->
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-col>
-    </el-row>
-  </div>
+	<div>
+		<el-row class="title-box">
+			用户管理
+		</el-row>
+		<el-row class="content-box">
+		</el-row>
+		<el-row class="table-box">
+			<el-table :data="tableData" border style="width: 100%">
+				<el-table-column label="头像">
+					<template scope="scope">
+						<img :src="scope.row.head" width="40" height="40" class="head_pic" />
+					</template>
+				</el-table-column>
+				<el-table-column prop="name" label="用户名" width="200">
+				</el-table-column>
+				<el-table-column prop="phone" label="手机号">
+				</el-table-column>
+				<el-table-column prop="createTime" label="注册日期" :formatter="timeFliter">
+				</el-table-column>
+				<el-table-column label="操作" width="200">
+					<template slot-scope="scope">
+						<el-button @click="delBtn(scope.row)" type="text" size="small" v-if="scope.row.status == 0">封禁</el-button>
+						<el-button @click="delBtn(scope.row)" type="text" size="small" v-if="scope.row.status != 0">解封</el-button>
+						<el-button @click="infoBtn(scope.row)" type="text" size="small">详情</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+		</el-row>
+		<el-row style="height: 80px;">
+			<el-col :span="24">
+				当前页数：{{page}}
+				<el-button type="primary" size="small" :disabled="page==1" @click="changePage(page-1)">上一页</el-button>
+				<el-button type="primary" size="small" :disabled="pageOver" @click="changePage(page+1)">下一页</el-button>
+			</el-col>
+		</el-row>
+	</div>
 </template>
 
 <script>
-  export default {
-    name: "list",
-    data(){
-      return{
-        tableData: [{
-          id: '2016-05-02',
-          name: '王小虎',
-          title: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          id: '2016-05-04',
-          name: '王小虎',
-          title: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          id: '2016-05-01',
-          name: '王小虎',
-          title: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          id: '2016-05-03',
-          name: '王小虎',
-          title: '上海市普陀区金沙江路 1516 弄'
-        }],
-
-      }
-    },
-    methods:{
-      handleClick(e){
-        console.log(e)
-        this.$router.push({
-          name: `userInfo`,
-          params: {
-            id:e.id
-          }
-        })
-      }
-    }
-  }
+	export default {
+		name: "contentList",
+		data() {
+			return {
+				tableData: [],
+				count: 10,
+				page: 1,
+				pageOver: true,
+			}
+		},
+		methods: {
+			timeFliter(row, col, val) {
+				let timer = new Date(val)
+				let dataTime = timer.toLocaleDateString() + ' ' + timer.toLocaleTimeString('chinese', {
+					hour12: false
+				})
+				return dataTime
+			},
+			/*获取评论列表*/
+			getContents(cnt) {
+				this.$api.getUsers(cnt, (res) => {
+					if (res.data.rc == this.$util.RC.SUCCESS) {
+						this.tableData = this.$util.tryParseJson(res.data.c)
+						console.log(this.tableData)
+					} else {
+						this.tableData = []
+					}
+					if (this.tableData.length < this.count) {
+						this.pageOver = true
+					} else {
+						this.pageOver = false
+					}
+				})
+			},
+			/* 分页*/
+			changePage(page) {
+				this.page = page
+				//获取内容列表
+				let cnt = {
+					moduleId: this.$constData.module,
+					count: this.count,
+					offset: (this.page - 1) * this.count
+				}
+				this.getContents(cnt)
+			},
+			delBtn(info) {
+				let msg =''
+				if(info.state == 0){
+					msg = '解封'
+				}else{
+					msg = '封禁'
+				}
+				this.$confirm('此操作将'+msg+'用户的评论功能, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(async () => {
+					let cnt = {
+						moduleId: this.$constData.module,
+						id:info.id,
+						bool:false
+					};
+					if(info.state == 1){//封禁
+						cnt.bool = true
+					}
+					this.$api.closeUser(cnt, (res) => {
+						if (res.data.rc == this.$util.RC.SUCCESS) {
+							this.$message({
+								type: 'success',
+								message: '操作成功!'
+							});
+						} else {
+							this.$message({
+								type: 'error',
+								message: '操作失败!'
+							});
+						}
+					})
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消'
+					});
+				});
+			},
+			//查看 详情
+			infoBtn(info) {
+				this.$router.push({
+					path: '/userInfo',
+					name: 'userInfo',
+					params: {
+						info: info
+					}
+				})
+			},
+		},
+		mounted() {
+			let cnt = {
+				moduleId: this.$constData.module,
+				count: this.count,
+				offset: (this.page - 1) * this.count
+			}
+			this.getContents(cnt)
+		}
+	}
 </script>
 
 <style scoped lang="scss">
-  .box{
-    background: #0086b3;
-    width: 500px;
-    height: 50px;
-  }
+	.title-box {
+		font-size: 16px;
+		color: #666;
+		line-height: 50px;
+		padding-left: 15px;
+	}
+
+	.content-box {
+		margin-top: 20px;
+		padding: 20px;
+	}
+
+	.table-box {
+		padding: 20px;
+
+	}
 </style>

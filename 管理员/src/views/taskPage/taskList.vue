@@ -141,7 +141,6 @@
 				if (this.searchData.status) {
 					cnt.status = this.searchData.status
 				}
-				console.log(cnt)
 				this.getContents(cnt)
 			},
 

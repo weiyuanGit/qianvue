@@ -22,7 +22,7 @@ constData.statusList = [{
 ]
 constData.powerList = [{
 		name: '免费',
-		value: 0
+		value: '0',
 	},
 	{
 		name: '付费',

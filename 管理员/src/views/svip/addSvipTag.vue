@@ -7,7 +7,7 @@
 				<el-input placeholder="请输入名称" v-model="title" style="display: inline-block;width: 400px"></el-input>
 			</el-col>
 		</el-row>
-		<el-row style="padding: 20px">
+		<el-row style="padding: 20px" v-if="this.power == 1">
 			<el-col :span="2" style="min-height: 20px"></el-col>
 			<el-col :span="20">
 				<span class="title-box"> 价格：</span>
@@ -18,6 +18,16 @@
 			<el-col :span="8">
 				<el-form label-width="80px">
 					<el-form-item label="状态">
+						<el-select v-model="power" placeholder="请选择" style="margin-right: 10px;">
+							<el-option v-for="item in powerList" :key="item.value" :label="item.name" :value="item.value">
+							</el-option>
+						</el-select>
+					</el-form-item>
+				</el-form>
+			</el-col>
+			<el-col :span="8">
+				<el-form label-width="80px">
+					<el-form-item label="免费">
 						<el-select v-model="status" placeholder="请选择" style="margin-right: 10px;">
 							<el-option v-for="item in statusList" :key="item.value" :label="item.name" :value="item.value">
 							</el-option>
@@ -47,6 +57,7 @@
 		name: "addSvip",
 		data() {
 			return {
+				power:1,
 				upChannelId: '',
 				channelList: [{
 					title: '',
@@ -62,6 +73,7 @@
 				status: this.$constData.statusList[3].value,
 				generalStatus: this.$constData.generalStatus,
 				statusList: this.$constData.statusList,
+				powerList: this.$constData.powerList,
 			}
 		},
 		methods: {
@@ -81,7 +93,7 @@
 					});
 					return
 				}
-				if(this.price == ''){
+				if(this.price == '' && this.power == 1){
 					this.$message({
 						message: '请输入价格',
 						type: 'warning'
@@ -101,6 +113,7 @@
 					status: this.status,
 					name: this.title,
 					price: this.price,
+					power:this.power,
 				};
 				this.$api.createChannelContentTag(cnt, (res => {
 					if (res.data.rc == this.$util.RC.SUCCESS) {

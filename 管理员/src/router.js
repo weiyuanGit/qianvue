@@ -40,6 +40,7 @@ const homeTag = () => import('./views/tag/homeTag')
 const vipTag = () => import('./views/tag/vipTag')
 const channelTag = () => import('./views/tag/channelTag')
 const editTag = () => import('./views/tag/editTag')
+const tagGroup = () => import('./views/tag/tagGroup')
 Vue.use(Router)
 
 export default new Router({
@@ -182,6 +183,10 @@ export default new Router({
 				    path: '/editTag',
 				    name: 'editTag',
 				    component: editTag
+				},{
+				    path: '/tagGroup',
+				    name: 'tagGroup',
+				    component: tagGroup
 				},
             ]
         },
